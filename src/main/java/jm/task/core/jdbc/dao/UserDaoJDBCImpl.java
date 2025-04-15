@@ -30,22 +30,65 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() {
+        try (Statement statement = connect.createStatement()) {
+            statement.execute("DROP TABLE IF EXISTS Users");
+            System.out.println("Таблица удалена");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
     public void saveUser(String name, String lastName, byte age) {
+        try (PreparedStatement preparedStatement = connect.prepareStatement("INSERT INTO Users (Name, LastName, Age ) VALUES (?,?,?)")) {
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setByte(3, age);
+            preparedStatement.executeUpdate();
+            System.out.println("User с именем - " + name + " добавлен в базу данных");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
     public void removeUserById(long id) {
+        try (PreparedStatement preparedStatement = connect.prepareStatement("DELETE FROM Users WHERE id=?")) {
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
+            System.out.println("User с id- " + id + " удален из базы данных");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
     public List<User> getAllUsers() {
-        return null;
+        List<User> users = new ArrayList<>();
+        try (Statement statement = connect.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT  * FROM Users");
+            while (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getLong("Id"));
+                user.setName(resultSet.getString("Name"));
+                user.setLastName(resultSet.getString("LastName"));
+                user.setAge(resultSet.getByte("Age"));
+                users.add(user);
+                System.out.println(user.toString());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 
     public void cleanUsersTable() {
+        try (Statement statement = connect.createStatement()) {
+            statement.execute("TRUNCATE Users");
+            System.out.println("Данные таблицы удалены");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 }
