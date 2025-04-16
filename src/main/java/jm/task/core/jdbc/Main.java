@@ -10,8 +10,8 @@ public class Main {
         userService.saveUser("Катя", "Рожкова", (byte) 30);
         userService.saveUser("Петр", "Петров", (byte) 28);
         userService.saveUser("Юля", "Мельникова", (byte) 20);
-//        userService.dropUsersTable();
-       // userService.cleanUsersTable();
+        userService.dropUsersTable();
+        userService.cleanUsersTable();
         userService.removeUserById(1);
         userService.getAllUsers();
     }
